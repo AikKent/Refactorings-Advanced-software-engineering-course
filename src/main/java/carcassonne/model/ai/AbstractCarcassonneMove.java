@@ -178,4 +178,19 @@ public abstract class AbstractCarcassonneMove implements Comparable<AbstractCarc
      */
     protected abstract double calculateValue();
 
+	public int compareMoveType() {
+		if (involvesMeeplePlacement()) {
+			switch (getMeepleType()) {
+			case CASTLE:
+				return 3;
+			case MONASTERY:
+				return 2;
+			case ROAD:
+				return 1;
+			default:
+			}
+		}
+		return 0;
+	}
+
 }

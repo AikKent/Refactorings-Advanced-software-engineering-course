@@ -34,28 +34,13 @@ public class RuleBasedComparator implements Comparator<AbstractCarcassonneMove> 
             return preferFalse(firstMove.involvesMeeplePlacement(), secondMove.involvesMeeplePlacement());
         }
         // Rule 3: Choose in the order of castle > monastery > road > fields
-        int moveTypeDifference = compareMoveType(firstMove) - compareMoveType(secondMove);
+        int moveTypeDifference = firstMove.compareMoveType() - secondMove.compareMoveType();
         if (moveTypeDifference != 0) {
             return moveTypeDifference;
         }
         // Rule 4: Finally, choose closest move to the center of the grid
         return (int) (ROUNDING_FACTOR * (distanceToCenter(secondMove) - distanceToCenter(firstMove)));
 
-    }
-
-    private int compareMoveType(AbstractCarcassonneMove move) {
-        if (move.involvesMeeplePlacement()) {
-            switch (move.getMeepleType()) {
-            case CASTLE:
-                return 3;
-            case MONASTERY:
-                return 2;
-            case ROAD:
-                return 1;
-            default:
-            }
-        }
-        return 0; // fields or no meeple placed
     }
 
     private double distanceToCenter(AbstractCarcassonneMove move) {
