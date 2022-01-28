@@ -16,11 +16,10 @@ import carcassonne.settings.PlayerColor;
  * @author Timur Saglam
  */
 public class Player {
-    private final int maximalTiles;
+    private PlayerScore playerScore = new PlayerScore();
+	private final int maximalTiles;
     private int freeMeeples;
     private final int number;
-    private int overallScore;
-    private Map<TerrainType, Integer> terrainSpecificScores;
     private final GameSettings settings;
     private final List<Tile> handOfTiles;
     private final boolean computerControlled;
@@ -39,7 +38,7 @@ public class Player {
         handOfTiles = new ArrayList<>();
         placedMeeples = new ArrayList<>();
         computerControlled = settings.isPlayerComputerControlled(number);
-        initializeScores();
+        playerScore.initializeScores();
     }
 
     /**
@@ -48,8 +47,7 @@ public class Player {
      * @param scoreType is the pattern type responsible for the points.
      */
     public void addPoints(int amount, TerrainType scoreType) {
-        terrainSpecificScores.put(scoreType, terrainSpecificScores.get(scoreType) + amount);
-        overallScore += amount;
+        playerScore.addPoints(amount, scoreType);
     }
 
     /**
@@ -141,7 +139,7 @@ public class Player {
      * @return the score
      */
     public int getScore() {
-        return overallScore;
+        return playerScore.getOverallScore();
     }
 
     /**
@@ -150,10 +148,8 @@ public class Player {
      * @return the specific score.
      */
     public int getTerrainScore(TerrainType scoreType) {
-        if (terrainSpecificScores.containsKey(scoreType)) {
-            return terrainSpecificScores.get(scoreType);
-        }
-        return -1; // error
+        
+return playerScore.getTerrainScore(scoreType);
     }
 
     /**
@@ -190,15 +186,7 @@ public class Player {
 
     @Override
     public String toString() {
-        return "Player[number: " + number + ", score: " + overallScore + ", free meeples: " + freeMeeples + "]";
-    }
-
-    private void initializeScores() {
-        overallScore = 0;
-        terrainSpecificScores = new HashMap<>();
-        for (int i = 0; i < TerrainType.values().length - 1; i++) {
-            terrainSpecificScores.put(TerrainType.values()[i], 0); // initial scores are zero
-        }
+        return "Player[number: " + number + ", score: " + playerScore.getOverallScore() + ", free meeples: " + freeMeeples + "]";
     }
 
     /**
