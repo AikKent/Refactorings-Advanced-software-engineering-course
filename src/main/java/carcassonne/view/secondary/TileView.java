@@ -142,19 +142,10 @@ public class TileView extends SecondaryView {
 
     // build the view content
     private void buildContent() {
-        // create buttons:
-        buttonSkip = new JButton(ImageLoadingUtil.SKIP.createHighDpiImageIcon());
-        buttonRotateLeft = new JButton(ImageLoadingUtil.LEFT.createHighDpiImageIcon());
-        buttonRotateRight = new JButton(ImageLoadingUtil.RIGHT.createHighDpiImageIcon());
-        // set tool tips:
-        buttonSkip.setToolTipText("Don't place tile and skip turn");
-        buttonRotateLeft.setToolTipText("Rotate left");
-        buttonRotateRight.setToolTipText("Rotate right");
-        // set listeners:
-        buttonSkip.addMouseListener((MouseClickListener) event -> controller.requestSkip());
-        buttonRotateLeft.addMouseListener((MouseClickListener) event -> rotateLeft());
-        buttonRotateRight.addMouseListener((MouseClickListener) event -> rotateRight());
-        // set constraints:
+        buttonSkip();
+		buttonRotateLeft();
+		buttonRotateRight();
+		// set constraints:
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.VERTICAL;
         constraints.weightx = 1; // keeps buttons evenly positioned.
@@ -169,16 +160,39 @@ public class TileView extends SecondaryView {
         tileLabels = new ArrayList<>();
         tiles = new ArrayList<>();
         for (int i = 0; i < GameSettings.MAXIMAL_TILES_ON_HAND; i++) {
-            JLabel label = new JLabel(defaultImage);
-            tileLabels.add(label);
+            JLabel label = label(defaultImage, i);
+			tileLabels.add(label);
             constraints.gridy++;
-            final int index = i;
-            label.addMouseListener((MouseClickListener) event -> selectTileLabel(index));
             dialogPanel.add(label, constraints);
         }
         constraints.gridy++;
         dialogPanel.add(Box.createVerticalStrut(BOTTOM_SPACE), constraints);
     }
+
+	private void buttonRotateRight() {
+		buttonRotateRight = new JButton(ImageLoadingUtil.RIGHT.createHighDpiImageIcon());
+		buttonRotateRight.setToolTipText("Rotate right");
+		buttonRotateRight.addMouseListener((MouseClickListener) event -> rotateRight());
+	}
+
+	private void buttonRotateLeft() {
+		buttonRotateLeft = new JButton(ImageLoadingUtil.LEFT.createHighDpiImageIcon());
+		buttonRotateLeft.setToolTipText("Rotate left");
+		buttonRotateLeft.addMouseListener((MouseClickListener) event -> rotateLeft());
+	}
+
+	private void buttonSkip() {
+		buttonSkip = new JButton(ImageLoadingUtil.SKIP.createHighDpiImageIcon());
+		buttonSkip.setToolTipText("Don't place tile and skip turn");
+		buttonSkip.addMouseListener((MouseClickListener) event -> controller.requestSkip());
+	}
+
+	private JLabel label(ImageIcon defaultImage, int i) {
+		JLabel label = new JLabel(defaultImage);
+		final int index = i;
+		label.addMouseListener((MouseClickListener) event -> selectTileLabel(index));
+		return label;
+	}
 
     // Updates the image of a specific tile label.
     private void updateTileLabel(int index) {
