@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Application-Name: Carcassonne
+SplashScreen-Image: splash.png
+Main-Class: carcassonne.Carcassonne
+Codebase: https://github.com/tsaglam/Carcassonne
+Permissions: all-permissions
