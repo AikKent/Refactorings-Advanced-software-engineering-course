@@ -2,6 +2,10 @@ package carcassonne.model.grid;
 
 import static carcassonne.model.grid.GridDirection.CENTER;
 
+import carcassonne.model.Player;
+import carcassonne.model.ai.TemporaryTile;
+import carcassonne.model.ai.ZeroSumMove;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,6 +16,7 @@ import java.util.Set;
 
 import carcassonne.model.terrain.TerrainType;
 import carcassonne.model.tile.Tile;
+import carcassonne.settings.GameSettings;
 
 /**
  * The class represents a spot on the grid.
@@ -246,4 +251,23 @@ public class GridSpot {
             patternList.add(new MonasteryPattern(spot));
         }
     }
+
+	public List<ZeroSumMove> movesForGridSpot(Player player, Tile originalTile, GameSettings settings) {
+		List<ZeroSumMove> possibleMoves = new ArrayList<>();
+		if (isPlaceable(originalTile)) {
+			TemporaryTile tile = new TemporaryTile(originalTile, originalTile.getRotation());
+			place(tile);
+			possibleMoves.add(new ZeroSumMove(tile, player, settings));
+			if (player.hasFreeMeeples()) {
+				for (GridDirection position : GridDirection.values()) {
+					if (tile.hasMeepleSpot(position) && settings.getMeepleRule(tile.getTerrain(position))
+							&& tile.allowsPlacingMeeple(position, player, settings)) {
+						possibleMoves.add(new ZeroSumMove(tile, position, player, settings));
+					}
+				}
+			}
+			removeTile();
+		}
+		return possibleMoves;
+	}
 }

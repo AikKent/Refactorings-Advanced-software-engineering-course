@@ -259,31 +259,12 @@ public class Grid {
             tile.rotateTo(rotation);
             for (int x = 0; x < width; x++) { // TODO (HIGH) [PERFORMANCE] maybe we should track free and occupied spots?
                 for (int y = 0; y < height; y++) {
-                    possibleMoves.addAll(movesForGridSpot(player, spots[x][y], tile, settings));
+                    possibleMoves.addAll(spots[x][y].movesForGridSpot(player, tile, settings));
                 }
             }
         }
         Collections.sort(possibleMoves);
         Collections.reverse(possibleMoves);
-        return possibleMoves;
-    }
-
-    private List<ZeroSumMove> movesForGridSpot(Player player, GridSpot spot, Tile originalTile, GameSettings settings) {
-        List<ZeroSumMove> possibleMoves = new ArrayList<>();
-        if (spot.isPlaceable(originalTile)) {
-            TemporaryTile tile = new TemporaryTile(originalTile, originalTile.getRotation());
-            spot.place(tile);
-            possibleMoves.add(new ZeroSumMove(tile, player, settings));
-            if (player.hasFreeMeeples()) {
-                for (GridDirection position : GridDirection.values()) {
-                    if (tile.hasMeepleSpot(position) && settings.getMeepleRule(tile.getTerrain(position))
-                            && tile.allowsPlacingMeeple(position, player, settings)) {
-                        possibleMoves.add(new ZeroSumMove(tile, position, player, settings));
-                    }
-                }
-            }
-            spot.removeTile();
-        }
         return possibleMoves;
     }
 
