@@ -227,13 +227,8 @@ public class Tile {
             } else if (terrain == TerrainType.MONASTERY) {
                 placeable = true; // you can always place on a monastery
             } else {
-                GridPattern pattern;
-                if (terrain == TerrainType.FIELDS) {
-                    pattern = new FieldsPattern(getGridSpot(), position);
-                } else { // castle or road:
-                    pattern = new CastleAndRoadPattern(getGridSpot(), position, terrain);
-                }
-                if (pattern.isNotOccupied() || (pattern.isOccupiedBy(player)) && settings.isAllowingFortifying()) {
+                GridPattern pattern = pattern(position, terrain);
+				if (pattern.isNotOccupied() || (pattern.isOccupiedBy(player)) && settings.isAllowingFortifying()) {
                     placeable = true; // can place meeple
                 }
                 pattern.removeTileTags();
@@ -241,6 +236,16 @@ public class Tile {
         }
         return placeable;
     }
+
+	private GridPattern pattern(GridDirection position, TerrainType terrain) {
+		GridPattern pattern;
+		if (terrain == TerrainType.FIELDS) {
+			pattern = new FieldsPattern(getGridSpot(), position);
+		} else {
+			pattern = new CastleAndRoadPattern(getGridSpot(), position, terrain);
+		}
+		return pattern;
+	}
 
     /**
      * Places a meeple on the tile, if the tile has not already one placed.
